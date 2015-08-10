@@ -21,5 +21,7 @@ Chris Sivanich ©2015
 
  ### Text Styles
 
+ [Including Images](https://en.wikibooks.org/wiki/LaTeX/Importing_Graphics#Including_graphics)
+ [Bibliography](https://en.wikibooks.org/wiki/LaTeX/Bibliography_Management#Natbib)
  [Source Code](https://en.wikibooks.org/wiki/LaTeX/Source_Code_Listings)
  [Combined Documents](http://www.latex-community.org/forum/viewtopic.php?f=5&t=1423)
