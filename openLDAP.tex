@@ -1,0 +1,100 @@
+\documentclass{article}
+\usepackage{fullpage}
+\title{openLDAP}
+\author{Chris Sivanich - csivanich@gmail.com}
+\begin{document}
+\maketitle
+\section{Server Setup}
+\subsection{Configs}
+\begin{itemize}
+    \item /etc/openldap/
+        \begin{itemize}
+            \item openldap.config - main config
+        \end{itemize}
+\end{itemize}
+
+\subsection{Base LDIF file}
+\begin{itemize}
+    \item 
+        \begin{verbatim}
+    [root@alpha openldap]# cat /tmp/base.ldif
+    # sivanich.org
+    dn: dc=sivanich,dc=com
+    dc: sivanich
+    o: Example Organization
+    objectClass: dcObject
+    objectClass: organization
+
+    # Manager, sivanich.org
+    dn: cn=Manager,dc=sivanich,dc=com
+    cn: Manager
+    description: LDAP administrator
+    objectClass: organizationalRole
+    objectClass: top
+    roleOccupant: dc=sivanich,dc=com
+
+    # People, sivanich.org
+    dn: ou=People,dc=sivanich,dc=com
+    ou: People
+    objectClass: top
+    objectClass: organizationalUnit
+
+    # Groups, sivanich.org
+    dn: ou=Groups,dc=sivanich,dc=com
+    ou: Groups
+    objectClass: top
+    objectClass: organizationalUnit
+
+    \end{verbatim}
+    \end{itemize}
+    \subsection{User LDIF File}
+    \begin{itemize}
+        \item Be careful that the $cn$ created with the wiki steps always match. They use $root$ initially, but later switch over to $Manager$
+            \begin{verbatim}
+    [root@alpha openldap]# cat /tmp/user_chris.ldif 
+    dn: uid:chris,ou=People,dc=sivanich,dc=com
+    objectClass: top
+    objectClass: person
+    objectClass: organizationalPerson
+    objectClass: inetOrgPerson
+    objectClass: posixAccount
+    objectClass: shadowAccount
+    uid: chris
+    cn: Chris Sivanich
+    sn: Sivanich
+    givenName: Christopher
+    title: Owner
+    mobile: +1 XXX XXX XXXX
+    userPassword: {CRYPT}XXXXXX
+    labeledURI: https://google.com
+    loginShell: /bin/zsh
+    uidNumber: 1000
+    gidNumber: 1000
+    homeDirectory: /home/chris
+    description: User Chris Sivanich
+    \end{verbatim}
+\item The $objectClass$ attributes are necessary, and outline the available attributes
+\end{itemize}
+
+\section{Client Setup}
+\subsection{\texttt{/etc/openldap/ldap.conf}}
+\begin{verbatim}
+BASE    dc=sivanich,dc=com          # Set domain controller
+URI     ldaps://alpha.sivanich.com  # Set DC location
+TLS_REQCERT allow                   # Allow self signed certs
+\end{verbatim}
+\subsection{NSS and PAM}
+\begin{itemize}
+    \item Install \texttt{nss nss-pam-ldapd}
+        \subsection{\texttt{/etc/nsswitch.conf}}
+        \begin{itemize}
+            \item Edit to have this:
+                \begin{verbatim}
+BASE    dc=sivanich,dc=com
+URI     ldaps://alpha.sivanich.com
+TLS_REQCERT allow
+                \end{verbatim}
+        \end{itemize}
+        \subsection{\texttt{/etc/nslcd.conf}}
+\end{itemize}
+\end{document}
